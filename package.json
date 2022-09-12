@@ -1,0 +1,11 @@
+{
+  "name": "socketio",
+  "version": "1.0.0",
+  "description": "chatting app",
+  "repository": "none",
+  "license": "ISC",
+  "dependencies": {
+    "express": "latest",
+    "socket.io": "latest"
+  }
+}
