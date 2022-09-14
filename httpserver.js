@@ -12,8 +12,19 @@ var http = require("http");
 var server = http.createServer();
 server.listen(9090);
 var socketio = require("socket.io");
-var io = socketio(server);
+// var io = socketio(server);
+var io = new socketio.Server(server, { cors: { origin: '*' } });
 
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/index.html");
+
+
+});
+
+io.on("connect", function(client) {
+    console.log("New Client is Connected");
+
+    client.on("clientmessage", function() {
+       console.log("client message received"); 
+    });
 });
