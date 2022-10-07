@@ -21,10 +21,25 @@ app.get("/", function (req, res) {
 
 });
 
-io.on("connect", function(client) {
+io.on("connect", function (client) {
     console.log("New Client is Connected");
 
-    client.on("clientmessage", function() {
-       console.log("client message received"); 
+    client.on("registername", function (data) {
+        var s = JSON.parse(data).nameofuser;
+        var msg = s + " Connected";
+        console.log(msg);
+
+        // client.emit("printname", JSON.stringify({ message: msg}));
+        //send "printname" event to only current client
+
+        io.sockets.emit("printname", JSON.stringify({ message: msg }));
+        //send "printname" event to all connected clients
+    });
+
+    client.on("clientmessage", function(data) {
+        console.log("client message received");
+        var d2 = JSON.parse(data);
+        var s = d2.messagetoprint;
+        io.sockets.emit("printname", JSON.stringify({ message: s }));
     });
 });

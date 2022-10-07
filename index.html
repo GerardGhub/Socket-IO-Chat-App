@@ -14,6 +14,10 @@
 
         #connectionStatus {
             font-weight: bold;
+            color:  yellow;
+        }
+        #txtMessage{
+            width: 400px;
         }
     </style>
 </head>
@@ -36,16 +40,38 @@
     <script src="/node_modules/socket.io/client-dist/socket.io.js"></script>
 
     <script>
-        document.getElementById("btnConnect").addEventListener("click", function () {
+        document.getElementById("btnConnect").addEventListener("click", 
+        function () {
             var server = io.connect("ws://localhost:9090");
 
             server.on("connect", function () {
                 console.log("connected");
+                var userName = document.getElementById("txtUsername").value;
+                server.emit("registername", JSON.stringify({ nameofuser: userName }));
+                document.getElementById("txtUsername").style.display = "none";
+                document.getElementById("btnConnect").style.display = "none";
+                document.getElementById("connectionStatus").innerHTML = userName;
             });
 
-            document.getElementById("btnSubmit").addEventListener("click", function () {
-                server.emit("clientmessage");
-            });
+                server.on("printname", function (data) {
+                    console.log("printname");
+                    console.log(data);
+                    var data2 = JSON.parse(data);
+                    document.getElementById("div1").innerHTML += "<span>" + data2.message
+                        + "</span><br>";
+                });
+
+        
+
+            document.getElementById("btnSubmit").addEventListener("click",
+                function () {
+                    var userName = document.getElementById("txtUsername").value;
+                    var currentMessage = document.getElementById("txtMessage").value;
+                    var s = userName + ": " + currentMessage;
+                    server.emit("clientmessage", JSON.stringify({ messagetoprint: s }));
+                    document.getElementById("txtMessage").value = "";
+                    document.getElementById("txtMessage").focus();
+                });
 
         });
     </script>
